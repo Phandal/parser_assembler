@@ -1,0 +1,51 @@
+{
+  "parser": {
+    "type": "csv",
+    "delimiter": ",",
+    "skipLines": 0,
+    "trim_fields": true,
+    "fields": [
+      {
+        "name": "Plan",
+        "index": 0
+      },
+      {
+        "name": "SSN",
+        "index": 1
+      },
+      {
+        "name": "401k",
+        "index": 5
+      },
+      {
+        "name": "Roth",
+        "index": 6
+      },
+      {
+        "name": "Address1",
+        "index": 20
+      },
+      {
+        "name": "Address2",
+        "index": 21
+      },
+      {
+        "name": "City",
+        "index": 22
+      },
+      {
+        "name": "State",
+        "index": 23
+      },
+      {
+        "name": "Zip",
+        "index": 24
+      },
+      {
+        "name": "Effective_Date",
+        "index": 25
+      }
+    ]
+  },
+  "assembly": {}
+}
