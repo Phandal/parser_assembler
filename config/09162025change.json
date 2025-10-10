@@ -52,8 +52,17 @@
     "mergeStrategy": {
       "plan": "first",
       "ssn": "first",
-      "401k": "last",
-      "roth": "sum",
+      "changes": {
+        "kind": "column-pivot",
+        "fields": [
+          "401k",
+          "roth"
+        ],
+        "output": {
+          "name": "type",
+          "value": "amount"
+        }
+      },
       "address1": "first",
       "address2": "first",
       "city": "first",
@@ -68,8 +77,7 @@
     "outputMapping": {
       "plan": "plan",
       "ssn": "ssn",
-      "401k": "401k",
-      "roth": "roth",
+      "changes": "changes",
       "address1": "address1",
       "address2": "address2",
       "city": "city",
