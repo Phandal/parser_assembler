@@ -1,5 +1,13 @@
 # A simple demo of inbound parsing process with assembler
 
+## Usage
+```bash
+git clone https://github.com/Phandal/parser_assembler
+cd parser_assembler
+npm i
+npm start -- path/to/config/file path/to/input/file
+```
+
 ## Documentation
 The process has 2 stages.
 1. Parsing
