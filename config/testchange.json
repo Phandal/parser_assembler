@@ -48,7 +48,6 @@
     "valueMaps": {},
     "transforms": {},
     "outputMapping": {
-      "groupid": "groupid",
       "ssn": "ssn",
       "changes": "changes"
     }

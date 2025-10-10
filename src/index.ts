@@ -23,11 +23,9 @@ async function run() {
   const parser = createParser(config.parser);
   const parsedRecords = await parser(inputPath);
 
-  console.log('parsed', JSON.stringify(parsedRecords, null, 2));
-
   const records = assemble(config.assembler, parsedRecords);
 
-  console.log('assembled', JSON.stringify(records, null, 2));
+  console.log(JSON.stringify(records, null, 2));
 }
 
 run().catch(console.error);

@@ -76,15 +76,8 @@
       "city": "upcase"
     },
     "outputMapping": {
-      "plan": "plan",
       "ssn": "ssn",
-      "changes": "changes",
-      "address1": "address1",
-      "address2": "address2",
-      "city": "city",
-      "state": "state",
-      "zip": "zip",
-      "effectiveDate": "effectiveDate"
+      "changes": "changes"
     }
   }
 }

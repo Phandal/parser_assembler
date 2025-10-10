@@ -42,7 +42,7 @@
     },
     "transforms": {},
     "outputMapping": {
-      "member_ssn": "ssn",
+      "ssn": "ssn",
       "changes": "changes"
     }
   }
