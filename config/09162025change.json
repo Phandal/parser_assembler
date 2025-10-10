@@ -52,7 +52,7 @@
     "mergeStrategy": {
       "plan": "first",
       "ssn": "first",
-      "401k": "list",
+      "401k": "last",
       "roth": "list",
       "address1": "first",
       "address2": "first",
