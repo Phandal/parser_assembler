@@ -40,8 +40,8 @@
           "loan"
         ],
         "output": {
-          "name": "type",
-          "value": "value"
+          "keyName": "type",
+          "valueName": "value"
         }
       }
     },

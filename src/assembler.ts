@@ -82,8 +82,8 @@ export function merge(records: ParsedRecord[], mergers: Record<string, MergeStra
 
               if (value !== "") {
                 const obj: MergedRecord = {};
-                obj[strategy.output.name] = field;
-                obj[strategy.output.value] = value;
+                obj[strategy.output.keyName] = field;
+                obj[strategy.output.valueName] = value;
                 results.push(obj);
               }
             }
