@@ -3,15 +3,19 @@ export type Config = {
   assembler: AssemblerConfig;
 }
 
-export type MergeStrategy = 'first' | 'last' | 'list';
+export type MergeStrategy = 'first' | 'last' | 'list' | 'sum' | MergeObjectStrategy;
 
-export type Transform = 'sum' | 'upcase';
+export type MergeObjectStrategy = {
+  fields: MergeStrategy;
+}
+
+export type TransformStrategy = 'downcase' | 'upcase';
 
 export type AssemblerConfig = {
   groupBy: string;
   mergeStrategy: Record<string, MergeStrategy>;
-  transforms: Record<string, Transform>;
-  outputMapping: Record<string, string | Record<string, string>[]>;
+  transforms: Record<string, TransformStrategy>;
+  outputMapping: Record<string, string>;
 }
 
 export type ParserConfig = CSVParserConfig;
@@ -23,5 +27,7 @@ export type CSVParserConfig = {
   trim: boolean;
   fields: { name: string, index: number }[];
 }
+
 export type Parser = (filepath: string) => Promise<Record<string, string>[]>;
 
+export type Transformer = (record: Record<string, string>) => Record<string, string>;

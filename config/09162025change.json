@@ -53,7 +53,7 @@
       "plan": "first",
       "ssn": "first",
       "401k": "last",
-      "roth": "list",
+      "roth": "sum",
       "address1": "first",
       "address2": "first",
       "city": "first",
@@ -62,8 +62,7 @@
       "effectiveDate": "first"
     },
     "transforms": {
-      "401k": "sum",
-      "roth": "sum",
+      "state": "downcase",
       "city": "upcase"
     },
     "outputMapping": {
