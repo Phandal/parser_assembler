@@ -14,7 +14,7 @@
         "index": 1
       },
       {
-        "name": "change",
+        "name": "amount",
         "index": 2
       }
     ]
@@ -23,18 +23,15 @@
     "groupBy": "ssn",
     "mergeStrategy": {
       "ssn": "first",
-      "type": "list",
-      "change": "list"
+      "changes": {
+        "type": "first",
+        "amount": "first"
+      }
     },
     "transforms": {},
     "outputMapping": {
       "member_ssn": "ssn",
-      "changes": [
-        {
-          "type": "type",
-          "change": "change"
-        }
-      ]
+      "changes": "changes"
     }
   }
 }

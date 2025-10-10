@@ -1,3 +1,7 @@
+export type ParsedRecord = { [key: string]: string };
+
+export type MergedRecord = { [key: string]: string | string[] | MergedRecord };
+
 export type Config = {
   parser: ParserConfig;
   assembler: AssemblerConfig;
@@ -6,7 +10,7 @@ export type Config = {
 export type MergeStrategy = 'first' | 'last' | 'list' | 'sum' | MergeObjectStrategy;
 
 export type MergeObjectStrategy = {
-  fields: MergeStrategy;
+  [key: string]: MergeStrategy;
 }
 
 export type TransformStrategy = 'downcase' | 'upcase';
@@ -28,6 +32,6 @@ export type CSVParserConfig = {
   fields: { name: string, index: number }[];
 }
 
-export type Parser = (filepath: string) => Promise<Record<string, string>[]>;
+export type Parser = (filepath: string) => Promise<ParsedRecord[]>;
 
-export type Transformer = (record: Record<string, string>) => Record<string, string>;
+export type Transformer = (record: ParsedRecord) => ParsedRecord;

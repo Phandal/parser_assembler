@@ -1,5 +1,5 @@
 import * as registry from './registry';
-import { AssemblerConfig, TransformStrategy, Transformer } from './types';
+import { AssemblerConfig, TransformStrategy, Transformer, ParsedRecord } from './types';
 
 export function applyTransform(data: string, strategy: TransformStrategy): string {
   switch (strategy) {
@@ -11,7 +11,7 @@ export function applyTransform(data: string, strategy: TransformStrategy): strin
 }
 
 export function transformerFactory(transforms: AssemblerConfig['transforms']): Transformer {
-  return (record: Record<string, string>): Record<string, string> => {
+  return (record: ParsedRecord): ParsedRecord => {
     const transformed = structuredClone(record);
 
     for (const [field, transformStrategy] of Object.entries(transforms)) {

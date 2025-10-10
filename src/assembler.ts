@@ -1,7 +1,7 @@
-import { AssemblerConfig, MergeStrategy } from "./types";
+import { AssemblerConfig, MergeStrategy, MergedRecord, ParsedRecord } from "./types";
 import { transformerFactory } from "./transformers";
 
-export function assemble(config: AssemblerConfig, records: Record<string, string>[]): MergedRecord[] {
+export function assemble(config: AssemblerConfig, records: ParsedRecord[]): MergedRecord[] {
   const assembled: MergedRecord[] = [];
 
   const transformer = transformerFactory(config.transforms);
@@ -20,8 +20,8 @@ export function assemble(config: AssemblerConfig, records: Record<string, string
   return assembled;
 }
 
-export function groupBy(key: string, records: Record<string, string>[]): Record<string, Record<string, string>[]> {
-  const grouped: Record<string, Record<string, string>[]> = {};
+export function groupBy(key: string, records: ParsedRecord[]): Record<string, ParsedRecord[]> {
+  const grouped: Record<string, ParsedRecord[]> = {};
 
   for (const record of records) {
     const keyValue = record[key];
@@ -37,29 +37,39 @@ export function groupBy(key: string, records: Record<string, string>[]): Record<
   return grouped;
 }
 
-type MergedRecord = { [key: string]: string | string[] | MergedRecord };
-
-export function merge(records: Record<string, string>[], mergers: Record<string, MergeStrategy>): MergedRecord {
+export function merge(records: ParsedRecord[], mergers: Record<string, MergeStrategy>): MergedRecord {
   const merged: MergedRecord = {};
-  for (const [field, mergeStrategy] of Object.entries(mergers)) {
-    if (typeof mergeStrategy === 'string') {
-      const values = records.map(record => record[field]).filter(r => r !== "");
 
-      switch (mergeStrategy) {
-        case 'first':
-          merged[field] = values[0];
-          break;
-        case 'last':
-          merged[field] = values[values.length - 1];
-          break;
-        case 'list':
-          merged[field] = values;
-          break;
-        case 'sum':
-          merged[field] = values.reduce((acc, val) => { return acc += Number(val) ?? 0 }, 0).toString();
+  // This is here to remove recursion from the function
+  const stack: { target: MergedRecord, strategies: Record<string, MergeStrategy> }[] = [
+    { target: merged, strategies: mergers }
+  ];
+
+  while (stack.length > 0) {
+    const { target, strategies } = stack.pop()!;
+
+    for (const [field, strategy] of Object.entries(strategies)) {
+      if (typeof strategy === 'string') {
+        const values = records.map(r => r[field]).filter(v => v !== undefined && v !== "");
+
+        switch (strategy) {
+          case 'first':
+            target[field] = values[0];
+            break;
+          case 'last':
+            target[field] = values[values.length - 1];
+            break;
+          case 'list':
+            target[field] = values;
+            break;
+          case 'sum':
+            target[field] = values.reduce((acc, val) => acc + Number(val ?? 0), 0).toString();
+            break;
+        }
+      } else {
+        target[field] = {};
+        stack.push({ target: target[field], strategies: strategy });
       }
-    } else {
-      merged[field] = merge(records, mergeStrategy);
     }
   }
 
