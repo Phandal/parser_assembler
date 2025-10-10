@@ -1,6 +1,6 @@
 export type ParsedRecord = { [key: string]: string };
 
-export type MergedRecord = { [key: string]: string | string[] | MergedRecord };
+export type MergedRecord = { [key: string]: string | string[] | MergedRecord[] };
 
 export type Config = {
   parser: ParserConfig;
@@ -10,7 +10,7 @@ export type Config = {
 export type MergeStrategy = 'first' | 'last' | 'list' | 'sum' | MergeObjectStrategy;
 
 export type MergeObjectStrategy = {
-  [key: string]: MergeStrategy;
+  fields: string[];
 }
 
 export type TransformStrategy = 'downcase' | 'upcase';

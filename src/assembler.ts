@@ -40,36 +40,32 @@ export function groupBy(key: string, records: ParsedRecord[]): Record<string, Pa
 export function merge(records: ParsedRecord[], mergers: Record<string, MergeStrategy>): MergedRecord {
   const merged: MergedRecord = {};
 
-  // This is here to remove recursion from the function
-  const stack: { target: MergedRecord, strategies: Record<string, MergeStrategy> }[] = [
-    { target: merged, strategies: mergers }
-  ];
+  for (const [field, strategy] of Object.entries(mergers)) {
+    if (typeof strategy === 'string') {
+      const values = records.map(r => r[field]).filter(v => v !== undefined && v !== "");
 
-  while (stack.length > 0) {
-    const { target, strategies } = stack.pop()!;
-
-    for (const [field, strategy] of Object.entries(strategies)) {
-      if (typeof strategy === 'string') {
-        const values = records.map(r => r[field]).filter(v => v !== undefined && v !== "");
-
-        switch (strategy) {
-          case 'first':
-            target[field] = values[0];
-            break;
-          case 'last':
-            target[field] = values[values.length - 1];
-            break;
-          case 'list':
-            target[field] = values;
-            break;
-          case 'sum':
-            target[field] = values.reduce((acc, val) => acc + Number(val ?? 0), 0).toString();
-            break;
-        }
-      } else {
-        target[field] = {};
-        stack.push({ target: target[field], strategies: strategy });
+      switch (strategy) {
+        case 'first':
+          merged[field] = values[0];
+          break;
+        case 'last':
+          merged[field] = values[values.length - 1];
+          break;
+        case 'list':
+          merged[field] = values;
+          break;
+        case 'sum':
+          merged[field] = values.reduce((acc, val) => acc + Number(val ?? 0), 0).toString();
+          break;
       }
+    } else {
+      merged[field] = records.map((record) => {
+        const obj: MergedRecord = {};
+        for (const field of strategy.fields) {
+          obj[field] = record[field];
+        }
+        return obj;
+      });
     }
   }
 

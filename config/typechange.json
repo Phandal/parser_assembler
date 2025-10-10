@@ -24,8 +24,11 @@
     "mergeStrategy": {
       "ssn": "first",
       "changes": {
-        "type": "first",
-        "amount": "first"
+        "kind": "object-list",
+        "fields": [
+          "type",
+          "amount"
+        ]
       }
     },
     "transforms": {},
