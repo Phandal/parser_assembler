@@ -7,10 +7,22 @@ export type Config = {
   assembler: AssemblerConfig;
 }
 
-export type MergeStrategy = 'first' | 'last' | 'list' | 'sum' | MergeObjectStrategy;
+export type MergeStrategy = 'first' | 'last' | 'list' | 'sum' | ObjectMergeStrategy;
 
-export type MergeObjectStrategy = {
+export type ObjectMergeStrategy = ObjectListMergeStrategy | ColumnPivotMergeStrategy
+
+export type ObjectListMergeStrategy = {
+  kind: 'object-list';
   fields: string[];
+}
+
+export type ColumnPivotMergeStrategy = {
+  kind: 'column-pivot';
+  fields: string[];
+  output: {
+    name: string;
+    value: string;
+  }
 }
 
 export type TransformStrategy = 'downcase' | 'upcase';

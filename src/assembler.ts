@@ -59,13 +59,33 @@ export function merge(records: ParsedRecord[], mergers: Record<string, MergeStra
           break;
       }
     } else {
-      merged[field] = records.map((record) => {
-        const obj: MergedRecord = {};
-        for (const field of strategy.fields) {
-          obj[field] = record[field];
-        }
-        return obj;
-      });
+      switch (strategy.kind) {
+        case 'object-list':
+          merged[field] = records.map((record) => {
+            const obj: MergedRecord = {};
+            for (const field of strategy.fields) {
+              obj[field] = record[field];
+            }
+            return obj;
+          });
+          break;
+        case 'column-pivot':
+          const results: MergedRecord[] = [];
+          records.forEach((record) => {
+            for (const field of strategy.fields) {
+              const value = record[field];
+
+              if (value !== "") {
+                const obj: MergedRecord = {};
+                obj[strategy.output.name] = field;
+                obj[strategy.output.value] = value;
+                results.push(obj);
+              }
+            }
+          });
+          merged[field] = results;
+          break;
+      }
     }
   }
 

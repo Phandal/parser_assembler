@@ -32,17 +32,24 @@
     "mergeStrategy": {
       "groupid": "first",
       "ssn": "first",
-      "401k": "first",
-      "roth": "first",
-      "loan": "first"
+      "changes": {
+        "kind": "column-pivot",
+        "fields": [
+          "401k",
+          "roth",
+          "loan"
+        ],
+        "output": {
+          "name": "type",
+          "value": "amount"
+        }
+      }
     },
     "transforms": {},
     "outputMapping": {
       "groupid": "groupid",
       "ssn": "ssn",
-      "401k": "401k",
-      "roth": "roth",
-      "loan": "loan"
+      "changes": "changes"
     }
   }
 }
