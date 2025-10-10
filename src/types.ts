@@ -13,7 +13,11 @@ export type ObjectMergeStrategy = ObjectListMergeStrategy | ColumnPivotMergeStra
 
 export type ObjectListMergeStrategy = {
   kind: 'object-list';
-  fields: string[];
+  valueMap: { [field: string]: { [key: string]: string } };
+  output: {
+    key: string;
+    value: string;
+  }
 }
 
 export type ColumnPivotMergeStrategy = {

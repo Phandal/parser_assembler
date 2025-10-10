@@ -1,55 +1,46 @@
 {
   "parser": {
     "type": "csv",
-    "delimiter": "|",
+    "delimiter": ",",
     "skipLines": 1,
     "trim": true,
     "fields": [
       {
-        "name": "groupid",
+        "name": "ssn",
         "index": 0
       },
       {
-        "name": "ssn",
+        "name": "type",
         "index": 1
       },
       {
-        "name": "401k",
+        "name": "value",
         "index": 2
-      },
-      {
-        "name": "roth",
-        "index": 3
-      },
-      {
-        "name": "loan",
-        "index": 4
       }
     ]
   },
   "assembler": {
     "groupBy": "ssn",
     "mergeStrategy": {
-      "groupid": "first",
       "ssn": "first",
       "changes": {
-        "kind": "column-pivot",
-        "fields": [
-          "401k",
-          "roth",
-          "loan"
-        ],
+        "kind": "object-list",
+        "valueMap": {
+          "type": {
+            "1": "401k",
+            "2": "roth",
+            "3": "city"
+          }
+        },
         "output": {
-          "name": "type",
+          "key": "type",
           "value": "value"
         }
       }
     },
-    "valueMaps": {},
     "transforms": {},
     "outputMapping": {
-      "groupid": "groupid",
-      "ssn": "ssn",
+      "member_ssn": "ssn",
       "changes": "changes"
     }
   }

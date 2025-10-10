@@ -14,7 +14,7 @@
         "index": 1
       },
       {
-        "name": "amount",
+        "name": "value",
         "index": 2
       }
     ]
@@ -27,10 +27,11 @@
         "kind": "object-list",
         "fields": [
           "type",
-          "amount"
+          "value"
         ]
       }
     },
+    "valueMaps": {},
     "transforms": {},
     "outputMapping": {
       "member_ssn": "ssn",

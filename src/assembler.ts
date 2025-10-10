@@ -63,9 +63,13 @@ export function merge(records: ParsedRecord[], mergers: Record<string, MergeStra
         case 'object-list':
           merged[field] = records.map((record) => {
             const obj: MergedRecord = {};
-            for (const field of strategy.fields) {
-              obj[field] = record[field];
+            let keyField = record[strategy.output.key];
+
+            if (strategy.valueMap[strategy.output.key][keyField] !== undefined) {
+              keyField = strategy.valueMap[strategy.output.key][keyField];
             }
+
+            obj[keyField] = record[strategy.output.value];
             return obj;
           });
           break;

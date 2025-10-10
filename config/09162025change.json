@@ -56,20 +56,21 @@
         "kind": "column-pivot",
         "fields": [
           "401k",
-          "roth"
+          "roth",
+          "address1",
+          "address2",
+          "city",
+          "state",
+          "zip"
         ],
         "output": {
           "name": "type",
-          "value": "amount"
+          "value": "value"
         }
       },
-      "address1": "first",
-      "address2": "first",
-      "city": "first",
-      "state": "first",
-      "zip": "first",
       "effectiveDate": "first"
     },
+    "valueMaps": {},
     "transforms": {
       "state": "downcase",
       "city": "upcase"
