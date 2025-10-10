@@ -3,49 +3,80 @@
     "type": "csv",
     "delimiter": ",",
     "skipLines": 0,
-    "trim_fields": true,
+    "trim": true,
     "fields": [
       {
-        "name": "Plan",
+        "name": "plan",
         "index": 0
       },
       {
-        "name": "SSN",
+        "name": "ssn",
         "index": 1
       },
       {
         "name": "401k",
+        "index": 4
+      },
+      {
+        "name": "roth",
         "index": 5
       },
       {
-        "name": "Roth",
-        "index": 6
-      },
-      {
-        "name": "Address1",
+        "name": "address1",
         "index": 20
       },
       {
-        "name": "Address2",
+        "name": "address2",
         "index": 21
       },
       {
-        "name": "City",
+        "name": "city",
         "index": 22
       },
       {
-        "name": "State",
+        "name": "state",
         "index": 23
       },
       {
-        "name": "Zip",
+        "name": "zip",
         "index": 24
       },
       {
-        "name": "Effective_Date",
+        "name": "effectiveDate",
         "index": 25
       }
     ]
   },
-  "assembly": {}
+  "assembler": {
+    "groupBy": "ssn",
+    "mergeStrategy": {
+      "plan": "first",
+      "ssn": "first",
+      "401k": "list",
+      "roth": "list",
+      "address1": "first",
+      "address2": "first",
+      "city": "first",
+      "state": "first",
+      "zip": "first",
+      "effectiveDate": "first"
+    },
+    "transforms": {
+      "401k": "sum",
+      "roth": "sum",
+      "city": "upcase"
+    },
+    "outputMapping": {
+      "plan": "plan",
+      "ssn": "ssn",
+      "401k": "401k",
+      "roth": "roth",
+      "address1": "address1",
+      "address2": "address2",
+      "city": "city",
+      "state": "state",
+      "zip": "zip",
+      "effectiveDate": "effectiveDate"
+    }
+  }
 }

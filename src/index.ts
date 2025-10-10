@@ -2,6 +2,8 @@
 
 import fs from 'node:fs/promises';
 import { createParser } from './parsers/parserfactory';
+import { assemble } from './assembler';
+import { Config } from './types';
 
 function usage() {
   console.error("Usage: npm start -- [config_path] [input_path]");
@@ -15,14 +17,17 @@ async function run() {
 
   const configPath = process.argv[2];
   const inputPath = process.argv[3];
-  console.error('inputPath', inputPath);
 
-  const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
+  const config = <Config>JSON.parse(await fs.readFile(configPath, 'utf8'));
 
   const parser = createParser(config.parser);
-  const records = await parser(inputPath);
+  const parsedRecords = await parser(inputPath);
 
-  console.log(JSON.stringify(records, null, 2));
+  console.log('parsed', JSON.stringify(parsedRecords, null, 2));
+
+  const records = assemble(config.assembler, parsedRecords);
+
+  console.log('assembled', JSON.stringify(records, null, 2));
 }
 
 run().catch(console.error);

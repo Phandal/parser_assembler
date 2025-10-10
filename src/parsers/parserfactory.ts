@@ -1,4 +1,4 @@
-import { ParserConfig, Parser } from './types';
+import { ParserConfig, Parser } from '../types';
 import { csvParser } from './csvparser';
 
 export function createParser(config: ParserConfig): Parser {
