@@ -39,7 +39,22 @@ corresponding change code that the app can use.
 
 
 ## Examples
-All examples have their input in the `inbound` directory and their config in the `config` directory
+All examples have their input in the `inbound` directory and their config in the `config` directory.
+Expected output for each example is a list of objects matching this type:
+```typescript
+type ExpectedOutput = {
+    ssn: string;
+    changes: Change[]
+}
+
+type Change = {
+    "type": string; // e.g. 401k, roth, city, state
+    "value": string;
+}
+```
+
+This standard format can then be used to generate each csv line for the import file.
+
 1. [column-pivot csv](inbound/09162025change.csv)
 2. [column-pivot csv with tab delimiter](inbound/testchange.csv)
 3. [object-list csv](inbound/typechange.csv)
