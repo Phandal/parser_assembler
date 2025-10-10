@@ -33,6 +33,6 @@ corresponding change code that the app can use.
 ## Examples
 All examples have their input in the `inbound` directory and their config in the `config` directory
 1. [column-pivot csv](inbound/09162025change.csv)
-2. [column-pivot csv with tab delimiter](inbound/testchange.csd)
+2. [column-pivot csv with tab delimiter](inbound/testchange.csv)
 3. [object-list csv](inbound/typechange.csv)
 4. [object-list csv with mapped type codes](inbound/mappedtypechange.csv)
