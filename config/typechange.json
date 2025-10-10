@@ -10,7 +10,7 @@
         "index": 0
       },
       {
-        "name": "type",
+        "name": "kind",
         "index": 1
       },
       {
@@ -25,10 +25,13 @@
       "ssn": "first",
       "changes": {
         "kind": "object-list",
-        "fields": [
-          "type",
-          "value"
-        ]
+        "valueMap": {},
+        "output": {
+          "key": "kind",
+          "keyName": "type",
+          "value": "value",
+          "valueName": "value"
+        }
       }
     },
     "valueMaps": {},

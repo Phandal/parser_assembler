@@ -16,7 +16,9 @@ export type ObjectListMergeStrategy = {
   valueMap: { [field: string]: { [key: string]: string } };
   output: {
     key: string;
+    keyName: string;
     value: string;
+    valueName: string;
   }
 }
 

@@ -65,11 +65,12 @@ export function merge(records: ParsedRecord[], mergers: Record<string, MergeStra
             const obj: MergedRecord = {};
             let keyField = record[strategy.output.key];
 
-            if (strategy.valueMap[strategy.output.key][keyField] !== undefined) {
+            if (strategy.valueMap[strategy.output.key] && strategy.valueMap[strategy.output.key][keyField] !== undefined) {
               keyField = strategy.valueMap[strategy.output.key][keyField];
             }
 
-            obj[keyField] = record[strategy.output.value];
+            obj[strategy.output.keyName] = keyField;
+            obj[strategy.output.valueName] = record[strategy.output.value]
             return obj;
           });
           break;
