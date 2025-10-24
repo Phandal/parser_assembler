@@ -70,7 +70,6 @@
       },
       "effectiveDate": "first"
     },
-    "valueMaps": {},
     "transforms": {
       "state": "downcase",
       "city": "upcase"

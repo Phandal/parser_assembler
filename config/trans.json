@@ -1,53 +1,56 @@
 {
   "parser": {
     "type": "csv",
-    "delimiter": "|",
+    "delimiter": ",",
     "skipLines": 1,
     "trim": true,
     "fields": [
       {
-        "name": "groupid",
+        "name": "recordtype",
         "index": 0
       },
       {
         "name": "ssn",
-        "index": 1
-      },
-      {
-        "name": "401k",
-        "index": 2
-      },
-      {
-        "name": "roth",
         "index": 3
       },
       {
-        "name": "loan",
+        "name": "effectiveDate",
         "index": 4
+      },
+      {
+        "name": "code",
+        "index": 6
+      },
+      {
+        "name": "amount",
+        "index": 8
+      },
+      {
+        "name": "loanpayment",
+        "index": 10
       }
     ]
   },
   "assembler": {
     "groupBy": "ssn",
-    "transforms": {},
     "mergeStrategy": {
-      "groupid": "first",
       "ssn": "first",
+      "effectivedate": "last",
       "changes": {
-        "kind": "column-pivot",
-        "fields": [
-          "401k",
-          "roth",
-          "loan"
-        ],
+        "kind": "object-list",
+        "valueMap": {},
         "output": {
+          "key": "code",
           "keyName": "type",
+          "value": "amount",
           "valueName": "value"
         }
       }
     },
+    "transforms": {},
     "outputMapping": {
       "ssn": "ssn",
+      "effectivedate": "effectivedate",
       "changes": "changes"
     }
   }

@@ -1,20 +1,14 @@
-import { AssemblerConfig, MergeStrategy, MergedRecord, ParsedRecord } from "./types";
-import { transformerFactory } from "./transformers";
+import type { AssemblerConfig, Member, ParsedRecord, Rule } from './types';
+import { createApplicator, createMerger } from './rules/rulefactory';
 
-export function assemble(config: AssemblerConfig, records: ParsedRecord[]): MergedRecord[] {
-  const assembled: MergedRecord[] = [];
+export function assemble(config: AssemblerConfig, records: ParsedRecord[]): Member[] {
+  const assembled: Member[] = [];
+  const grouped = groupBy(config.groupBy, records);
+  console.log(grouped);
 
-  const transformer = transformerFactory(config.transforms);
-  const transformed = records.map(transformer);
-
-  const grouped = groupBy(config.groupBy, transformed);
-
-  for (const [groupKey, groupedRecords] of Object.entries(grouped)) {
-    const merged = merge(groupedRecords, config.mergeStrategy);
-    merged[config.groupBy] = groupKey;
-
-    const mapped = mapOutput(merged, config.outputMapping);
-    assembled.push(mapped);
+  for (const [_, groupedRecords] of Object.entries(grouped)) {
+    const member = merge(config.rules, groupedRecords);
+    assembled.push(member);
   }
 
   return assembled;
@@ -25,84 +19,145 @@ export function groupBy(key: string, records: ParsedRecord[]): Record<string, Pa
 
   for (const record of records) {
     const keyValue = record[key];
-    if (keyValue === "" || keyValue === undefined) continue;
+    if (keyValue === '' || keyValue === undefined) continue;
 
-    if (!grouped[keyValue]) {
-      grouped[keyValue] = [record];
-    } else {
+    if (grouped[keyValue] !== undefined) {
       grouped[keyValue].push(record);
+    } else {
+      grouped[keyValue] = [record];
     }
   }
-
+  
   return grouped;
 }
 
-export function merge(records: ParsedRecord[], mergers: Record<string, MergeStrategy>): MergedRecord {
-  const merged: MergedRecord = {};
+export function merge(rules: Rule[], records: ParsedRecord[]): Member {
+  let member: Member = {
+    ssn: '',
+    effectiveDate: '',
+    demographic: {},
+    deferrals: [],
+  };
 
-  for (const [field, strategy] of Object.entries(mergers)) {
-    if (typeof strategy === 'string') {
-      const values = records.map(r => r[field]).filter(v => v !== undefined && v !== "");
+  for (const rule of rules) {
+    const applicator = createApplicator(rule);
+    const result = applicator(records);
 
-      switch (strategy) {
-        case 'first':
-          merged[field] = values[0];
-          break;
-        case 'last':
-          merged[field] = values[values.length - 1];
-          break;
-        case 'list':
-          merged[field] = values;
-          break;
-        case 'sum':
-          merged[field] = values.reduce((acc, val) => acc + Number(val ?? 0), 0).toString();
-          break;
-      }
-    } else {
-      switch (strategy.kind) {
-        case 'object-list':
-          merged[field] = records.map((record) => {
-            const obj: MergedRecord = {};
-            let keyField = record[strategy.output.key];
+    // This means that the rule did not apply to the record
+    if (!result.ok) continue;
 
-            if (strategy.valueMap[strategy.output.key] && strategy.valueMap[strategy.output.key][keyField] !== undefined) {
-              keyField = strategy.valueMap[strategy.output.key][keyField];
-            }
-
-            obj[strategy.output.keyName] = keyField;
-            obj[strategy.output.valueName] = record[strategy.output.value]
-            return obj;
-          });
-          break;
-        case 'column-pivot':
-          const results: MergedRecord[] = [];
-          records.forEach((record) => {
-            for (const field of strategy.fields) {
-              const value = record[field];
-
-              if (value !== "") {
-                const obj: MergedRecord = {};
-                obj[strategy.output.keyName] = field;
-                obj[strategy.output.valueName] = value;
-                results.push(obj);
-              }
-            }
-          });
-          merged[field] = results;
-          break;
-      }
-    }
+    const merger = createMerger(rule);
+    member = merger(member, result.value);
   }
 
-  return merged;
+  return member;
 }
 
-export function mapOutput(record: MergedRecord, mapping: AssemblerConfig['outputMapping']): MergedRecord {
-  const mapped: MergedRecord = {};
+// import { AssemblerConfig, MergeStrategy, MergedRecord, ParsedRecord } from "./types";
+// import { transformerFactory } from "./transformers";
 
-  for (const [target, source] of Object.entries(mapping)) {
-    mapped[target] = <string>record[source];
-  }
-
-  return mapped;
-}
+// export function assemble(config: AssemblerConfig, records: ParsedRecord[]): MergedRecord[] {
+//   const assembled: MergedRecord[] = [];
+//
+//   const transformer = transformerFactory(config.transforms);
+//   const transformed = records.map(transformer);
+//
+//   const grouped = groupBy(config.groupBy, transformed);
+//
+//   for (const [groupKey, groupedRecords] of Object.entries(grouped)) {
+//     const merged = merge(groupedRecords, config.mergeStrategy);
+//     merged[config.groupBy] = groupKey;
+//
+//     const mapped = mapOutput(merged, config.outputMapping);
+//     assembled.push(mapped);
+//   }
+//
+//   return assembled;
+// }
+//
+// export function groupBy(key: string, records: ParsedRecord[]): Record<string, ParsedRecord[]> {
+//   const grouped: Record<string, ParsedRecord[]> = {};
+//
+//   for (const record of records) {
+//     const keyValue = record[key];
+//     if (keyValue === "" || keyValue === undefined) continue;
+//
+//     if (!grouped[keyValue]) {
+//       grouped[keyValue] = [record];
+//     } else {
+//       grouped[keyValue].push(record);
+//     }
+//   }
+//
+//   return grouped;
+// }
+//
+// export function merge(records: ParsedRecord[], mergers: Record<string, MergeStrategy>): MergedRecord {
+//   const merged: MergedRecord = {};
+//
+//   for (const [field, strategy] of Object.entries(mergers)) {
+//     if (typeof strategy === 'string') {
+//       const values = records.map(r => r[field]).filter(v => v !== undefined && v !== "");
+//
+//       switch (strategy) {
+//         case 'first':
+//           merged[field] = values[0];
+//           break;
+//         case 'last':
+//           merged[field] = values[values.length - 1];
+//           break;
+//         case 'list':
+//           merged[field] = values;
+//           break;
+//         case 'sum':
+//           merged[field] = values.reduce((acc, val) => acc + Number(val ?? 0), 0).toString();
+//           break;
+//       }
+//     } else {
+//       switch (strategy.kind) {
+//         case 'object-list':
+//           merged[field] = records.map((record) => {
+//             const obj: MergedRecord = {};
+//             let keyField = record[strategy.output.key];
+//
+//             if (strategy.valueMap[strategy.output.key] && strategy.valueMap[strategy.output.key][keyField] !== undefined) {
+//               keyField = strategy.valueMap[strategy.output.key][keyField];
+//             }
+//
+//             obj[strategy.output.keyName] = keyField;
+//             obj[strategy.output.valueName] = record[strategy.output.value]
+//             return obj;
+//           });
+//           break;
+//         case 'column-pivot':
+//           const results: MergedRecord[] = [];
+//           records.forEach((record) => {
+//             for (const field of strategy.fields) {
+//               const value = record[field];
+//
+//               if (value !== "") {
+//                 const obj: MergedRecord = {};
+//                 obj[strategy.output.keyName] = field;
+//                 obj[strategy.output.valueName] = value;
+//                 results.push(obj);
+//               }
+//             }
+//           });
+//           merged[field] = results;
+//           break;
+//       }
+//     }
+//   }
+//
+//   return merged;
+// }
+//
+// export function mapOutput(record: MergedRecord, mapping: AssemblerConfig['outputMapping']): MergedRecord {
+//   const mapped: MergedRecord = {};
+//
+//   for (const [target, source] of Object.entries(mapping)) {
+//     mapped[target] = <string>record[source];
+//   }
+//
+//   return mapped;
+// }

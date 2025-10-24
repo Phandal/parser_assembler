@@ -1,13 +1,11 @@
-import { Parser, CSVParserConfig } from '../types';
-import * as fs from 'node:fs/promises';
+import { Parser, CSVParserConfig, ParsedRecord } from '../types';
 import Papa from 'papaparse';
 
 export function csvParser(config: CSVParserConfig): Parser {
-  return async (path: string): Promise<Record<string, string>[]> => {
-    const input = await fs.readFile(path, 'utf8');
-    const results = Papa.parse<string[]>(input, { delimiter: config.delimiter, skipFirstNLines: config.skipLines, });
+  return async (input: string): Promise<ParsedRecord[]> => {
+    const results = Papa.parse<string[]>(input, { delimiter: config.delimiter, skipFirstNLines: config.skipLines, header: false, skipEmptyLines: true, });
 
-    if (results.errors.length) {
+    if (results.errors.length !== 0) {
       console.error(results.errors);
       throw new Error('Failed to parse csv file.');
     }

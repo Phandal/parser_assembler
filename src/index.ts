@@ -17,11 +17,11 @@ async function run() {
 
   const configPath = process.argv[2];
   const inputPath = process.argv[3];
-
-  const config = <Config>JSON.parse(await fs.readFile(configPath, 'utf8'));
+  const config = <Config>JSON.parse(await fs.readFile(configPath, 'utf-8'));
+  const input = await fs.readFile(inputPath, 'utf-8');
 
   const parser = createParser(config.parser);
-  const parsedRecords = await parser(inputPath);
+  const parsedRecords = await parser(input);
 
   const records = assemble(config.assembler, parsedRecords);
 

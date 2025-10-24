@@ -2,11 +2,11 @@
   "name": "360",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx --test-reporter spec --test tests/**/*.ts",
+    "test:only": "tsx --test-reporter spec --test-only --test tests/**/*.ts"
   },
   "keywords": [],
   "author": "",
