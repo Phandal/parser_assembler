@@ -20,6 +20,17 @@ The assember is responsible for transforming, merging, and mapping data to the s
 does this with a set of rules that transforms how the data is manipulated. The rules should be
 somewhat user-friendly, as they should be able to be built into a ui.
 
+### Rules
+1. Take
+This rule allows you to `take` the sequence from the grouped records and `set` its value in the
+member record output via the `mergeInto.output` field.
+
+2. When
+This rule allows you to `push` or `set` values in the member record output via the
+`mergeInto.output` field when a conditions is met. The condition is in the `when` section
+of the rule. If the `mergeInto.operation` is set, then the last value from the grouped
+records is set.
+
 ## Standard Format
 ```json
 {

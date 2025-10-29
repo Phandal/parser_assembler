@@ -1,3 +1,9 @@
+export type ApplicatorResult = string | Record<string, string>[] | null;
+
+export type Applicator = (records: ParsedRecord[]) => ApplicatorResult;
+
+export type Merger = (member: Member, result: ApplicatorResult) => Member;
+
 export type Config = {
   parser: ParserConfig;
   assembler: AssemblerConfig;
@@ -43,33 +49,42 @@ export type AssemblerConfig = {
   rules: Rule[];
 }
 
-export type Rule = ({ take: TakeRule } | { when: WhenRule }) & { mergeInto: (PushMerge | SetMerge) };
+export type Rule = TakeRule | WhenRule;
 
 export type TakeRule = {
-  field: string;
+  take: TakeRuleOptions;
+  mergeInto: (SetMerge);
+}
+
+export type TakeRuleOptions = {
   sequence: 'first' | 'last';
-};
+}
 
 export type WhenRule = {
+  when: WhenRuleOptions;
+  mergeInto: (PushMerge | SetMerge);
+}
+
+export type WhenRuleOptions = {
   field: string;
   equals: string | HardCoded
 }
 
+export type HardCoded = { _value: string };
+
+export type PushMergeOutput = string | Record<string, string | HardCoded>;
+
 export type PushMerge = {
   path: string;
   operation: 'push';
-  output: string | HardCoded;
+  output: PushMergeOutput;
 }
 
 export type SetMerge = {
   path: string;
   operation: 'set';
-  output: string | HardCoded;
+  output: string;
 }
-
-export type HardCoded = { _value: string };
-
-export type Option<T> = { some: T } | { none: true };
 
 // export type ParsedRecord = { [key: string]: string };
 

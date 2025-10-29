@@ -1,5 +1,5 @@
-import { Parser, CSVParserConfig, ParsedRecord } from '../types';
 import Papa from 'papaparse';
+import type { Parser, CSVParserConfig, ParsedRecord } from '../types';
 
 export function csvParser(config: CSVParserConfig): Parser {
   return async (input: string): Promise<ParsedRecord[]> => {

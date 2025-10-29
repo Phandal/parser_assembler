@@ -3,7 +3,7 @@
 import fs from 'node:fs/promises';
 import { createParser } from './parsers/parserfactory';
 import { assemble } from './assembler';
-import { Config } from './types';
+import type { Config } from './types';
 
 function usage() {
   console.error("Usage: npm start -- [config_path] [input_path]");
