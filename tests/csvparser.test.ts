@@ -6,7 +6,7 @@ import type { CSVParserConfig } from '../src/types';
 const input = `Name,Age\nJack  ,14  \nMark ,15 \nSusan,56\n`;
 
 describe('csvParser', () => {
-  it('skipsLines', async () => {
+  it('csv::skipsLines', async () => {
     const config: CSVParserConfig = {
       kind: 'csv',
       skipLines: 2,
@@ -23,7 +23,7 @@ describe('csvParser', () => {
     assert.deepEqual(results, [{ name: 'Mark ', age: '15 ' }, { name: 'Susan', age: '56' }]);
   });
 
-  it('trim', async () => {
+  it('csv::trim', async () => {
     const config: CSVParserConfig = {
       kind: 'csv',
       skipLines: 1,

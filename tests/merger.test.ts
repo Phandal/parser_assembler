@@ -26,7 +26,7 @@ describe('setMerge', () => {
     assert.deepEqual(got, want);
   });
 
-  it('set unknown path', () => {
+  it('set::unknown path', () => {
     const member = createMember();
     const mergeInto: SetMerge = { path: 'ssn.here', operation: 'set', output: '' };
 
@@ -34,7 +34,7 @@ describe('setMerge', () => {
     assert.throws(() => { merger(member, 'value'); });
   });
 
-  it('set deep path', () => {
+  it('set::deep path', () => {
     const member = createMember();
     const mergeInto: SetMerge = { path: 'demographic.city', operation: 'set', output: '' };
 
@@ -58,7 +58,7 @@ describe('pushMerge', () => {
     assert(isPushMerge(setMerge) === false);
   });
 
-  it('push string output', () => {
+  it('push::string output', () => {
     const member = createMember();
     const mergeInto: PushMerge = { path: 'deferrals', operation: 'push', output: '' };
 
@@ -69,7 +69,7 @@ describe('pushMerge', () => {
     assert.deepEqual(got, want);
   });
 
-  it('push object output', () => {
+  it('push::object output', () => {
     const member = createMember();
     const mergeInto: PushMerge = { path: 'deferrals', operation: 'push', output: {} };
 
@@ -80,7 +80,7 @@ describe('pushMerge', () => {
     assert.deepEqual(got, want);
   });
 
-  it('push unknown path', () => {
+  it('push::unknown path', () => {
     const member = createMember();
     const mergeInto: PushMerge = { path: 'unknown', operation: 'push', output: {} };
 
@@ -88,7 +88,7 @@ describe('pushMerge', () => {
     assert.throws(() => merger(member, ''));
   });
 
-  it('push deep path', () => {
+  it('push::deep path', () => {
     const member = {
       ssn: '',
       effectiveDate: '',

@@ -5,7 +5,7 @@ import { groupBy, merge, createMember } from '../src/assembler';
 import type { ParsedRecord, Rule } from '../src/types';
 
 describe('groupBy', () => {
-  it('groups records by a key', () => {
+  it('groupBy::groups records by a key', () => {
     const records = [
       { id: '1', amount: '4' },
       { id: '1', amount: '60' },
@@ -31,7 +31,7 @@ describe('groupBy', () => {
     assert.deepEqual(grouped, expected);
   });
 
-  it('should skip records where the key is undefined', () => {
+  it('groupBy::should skip records where the key is undefined', () => {
     const records = [
       { id: '1', amount: '40' },
     ];
@@ -44,13 +44,13 @@ describe('groupBy', () => {
 });
 
 describe('merge', () => {
-  it('should return an empty member if there are no rules', () => {
+  it('merge::should return an empty member if there are no rules', () => {
     const got = merge([], []);
 
     assert.deepEqual(got, createMember());
   });
 
-  it('should not merge if the rule does not apply', (ctx) => {
+  it('merge::should not merge if the rule does not apply', (ctx) => {
     const rules: Rule[] = [
       {
         when: { field: 'nonexistent', equals: 'test' },

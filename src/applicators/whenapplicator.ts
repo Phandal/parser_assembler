@@ -1,4 +1,4 @@
-import type { HardCoded, Rule, WhenRule, Applicator, ApplicatorResult, ParsedRecord, WhenRuleEqualOptions, WhenRuleNotEqualOptions } from '../types';
+import type { HardCoded, Rule, WhenRule, Applicator, ApplicatorResult, ParsedRecord, WhenRuleEqualOptions, WhenRuleNotEqualOptions, WhenRuleAndOptions, WhenRuleOrOptions } from '../types';
 
 export function isWhenRule(rule: Rule): rule is WhenRule {
   return 'when' in rule;
@@ -30,15 +30,36 @@ export function isObjectMapper(output: Rule['mergeInto']['output']): output is R
 }
 
 export function evaluateWhen(when: WhenRule['when'], record: ParsedRecord): boolean {
-  const value = record[when.field];
 
-  if (isWhenEqual(when)) {
-    return value === when.equals;
+  if (isWhenAnd(when)) {
+    for (const condition of when.and) {
+      if (!evaluateWhen(condition, record)) {
+        return false;
+      }
+    }
+    return true;
+  } else if (isWhenOr(when)) {
+    for (const condition of when.or) {
+      if (evaluateWhen(condition, record)) {
+        return true;
+      }
+    }
+    return false;
+  } else if (isWhenEqual(when)) {
+    return record[when.field] === when.equals;
   } else if (isWhenNotEqual(when)) {
-    return value !== when.notequals;
+    return record[when.field] !== when.notequals;
   }
 
   throw new Error(`Unknown when comparison: ${JSON.stringify(when)}`);
+}
+
+export function isWhenAnd(when: WhenRule['when']): when is WhenRuleAndOptions {
+  return 'and' in when;
+}
+
+export function isWhenOr(when: WhenRule['when']): when is WhenRuleOrOptions {
+  return 'or' in when;
 }
 
 export function isWhenEqual(when: WhenRule['when']): when is WhenRuleEqualOptions {

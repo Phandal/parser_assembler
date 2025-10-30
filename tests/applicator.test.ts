@@ -143,6 +143,52 @@ describe('when applicator', () => {
     assert.deepEqual(got, want);
   });
 
+  it('when::and rule', () => {
+    const rule: WhenRule = {
+      when: { and: [{ field: 'code', equals: '3' }, { field: 'out', equals: 'three' }] },
+      mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
+    };
+
+    const applicator = when(rule);
+
+    const got = applicator(records);
+    const want = [{ code: 'three' }]
+    assert.deepEqual(got, want);
+  });
+
+  it('when::or rule', () => {
+    const rule: WhenRule = {
+      when: { or: [{ field: 'code', equals: '3' }, { field: 'out', equals: 'twotwo' }] },
+      mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
+    };
+
+    const applicator = when(rule);
+
+    const got = applicator(records);
+    const want = [{ code: 'three' }, { code: 'twotwo' }];
+    assert.deepEqual(got, want);
+  });
+
+  it('when::nested and/or', () => {
+    const rule: WhenRule = {
+      when: {
+        and: [
+          {
+            or: [
+              { field: 'out', equals: 'two' },
+              { field: 'out', equals: 'twotwo' }]
+          },
+          { field: 'code', equals: '2' }]
+      },
+      mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
+    }
+
+    const applicator = when(rule);
+    const got = applicator(records);
+    const want = [{ code: 'two' }, { code: 'twotwo' }];
+    assert.deepEqual(got, want);
+  });
+
   it('when::object output with more than one match', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '2' },
@@ -195,7 +241,7 @@ describe('when applicator', () => {
     assert.deepEqual(got, want);
   });
 
-  it('stringMapper ignores undefined and empty string', () => {
+  it('stringMapper::ignores undefined and empty string', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '1' },
       mergeInto: { path: '', operation: 'push', output: 'out' },
@@ -208,7 +254,7 @@ describe('when applicator', () => {
     assert.deepEqual(got, want);
   });
 
-  it('objectMapper does not ignore undefined and empty string', () => {
+  it('objectMapper::does not ignore undefined and empty string', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '1' },
       mergeInto: { path: '', operation: 'push', output: { code: 'out' } },

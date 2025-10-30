@@ -65,7 +65,15 @@ export type WhenRule = {
   mergeInto: (PushMerge | SetMerge);
 }
 
-export type WhenRuleOptions = WhenRuleNotEqualOptions | WhenRuleEqualOptions;
+export type WhenRuleOptions = WhenRuleNotEqualOptions | WhenRuleEqualOptions | WhenRuleAndOptions | WhenRuleOrOptions;
+
+export type WhenRuleAndOptions = {
+  and: WhenRuleOptions[];
+}
+
+export type WhenRuleOrOptions = {
+  or: WhenRuleOptions[];
+}
 
 export type WhenRuleNotEqualOptions = {
   field: string;
