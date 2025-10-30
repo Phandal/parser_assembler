@@ -2,8 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { isTakeRule, take } from '../src/applicators/takeapplicator';
-import { isWhenRule, objectMapper, stringMapper, when } from '../src/applicators/whenapplicator';
-import type { ParsedRecord, TakeRule, WhenRule } from '../src/types';
+import { evaluateWhen, isWhenRule, objectMapper, stringMapper, when } from '../src/applicators/whenapplicator';
+import type { ParsedRecord, TakeRule, WhenRule, WhenRuleEqualOptions, WhenRuleNotEqualOptions } from '../src/types';
 
 const takeRule: TakeRule = {
   take: { sequence: 'last' },
@@ -206,5 +206,13 @@ describe('when applicator', () => {
     const got = mapper(records);
     const want = null
     assert.deepEqual(got, want);
+  });
+
+  it('evaluateWhen', () => {
+    const whenequals: WhenRuleEqualOptions = { field: 'code', equals: '1' };
+    const whennotequals: WhenRuleNotEqualOptions = { field: 'code', notequals: '5' };
+
+    assert(evaluateWhen(whenequals, records[0]) === true);
+    assert(evaluateWhen(whennotequals, records[0]) === true);
   });
 });
