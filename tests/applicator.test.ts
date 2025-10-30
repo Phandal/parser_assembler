@@ -195,7 +195,7 @@ describe('when applicator', () => {
     assert.deepEqual(got, want);
   });
 
-  it('objectMapper ignores undefined and empty string', () => {
+  it('objectMapper does not ignore undefined and empty string', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '1' },
       mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
@@ -204,7 +204,7 @@ describe('when applicator', () => {
     const mapper = objectMapper(rule.when, rule.mergeInto.output as Record<string, string>);
 
     const got = mapper(records);
-    const want = null
+    const want = [{ code: '' }];
     assert.deepEqual(got, want);
   });
 

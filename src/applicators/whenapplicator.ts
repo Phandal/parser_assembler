@@ -70,23 +70,15 @@ export function objectMapper(when: WhenRule['when'], output: Record<string, stri
     const results: Record<string, string>[] = [];
     for (const record of records) {
       if (evaluateWhen(when, record)) {
-        let shouldPush = true;
         const result: Record<string, string> = {};
         for (const [key, value] of Object.entries(output)) {
           if (typeof value === 'object') {
             result[key] = value._value;
           } else {
-            const recordValue = record[value];
-            if (recordValue === undefined || recordValue === '') {
-              shouldPush = false;
-              break;
-            }
             result[key] = record[value]
           }
-
-
-          if (shouldPush) { results.push(result) };
         }
+        results.push(result);
       }
     }
     if (results.length !== 0) {
