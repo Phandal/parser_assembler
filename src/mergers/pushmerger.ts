@@ -7,21 +7,27 @@ export function isPushMerge(mergeInto: Rule['mergeInto']): mergeInto is PushMerg
 export function push(mergeInto: PushMerge): Merger {
   return (member: Member, result: ApplicatorResult): Member => {
     let current: any = member;
-    for (const path of mergeInto.path.split('.')) {
+    const pathParts = mergeInto.path.split('.');
+
+    for (let i = 0; i < pathParts.length - 1; ++i) {
       if (current === undefined) {
         throw new Error(`could not find path in member '${mergeInto.path}'`);
       }
-      current = current[path];
+      current = current[pathParts[i]];
     }
 
-    if (!Array.isArray(current)) {
+    if (current === undefined) {
+      throw new Error(`could not find path in member '${mergeInto.path}'`);
+    }
+
+    if (!Array.isArray(current[pathParts[pathParts.length - 1]])) {
       throw new Error(`can not push to non array member property '${mergeInto.path}'`);
     }
 
     if (Array.isArray(result)) {
-      current.push(...result);
+      current[pathParts[pathParts.length - 1]].push(...result);
     } else {
-      current.push(result);
+      current[pathParts[pathParts.length - 1]].push(result);
     }
     return member;
   }

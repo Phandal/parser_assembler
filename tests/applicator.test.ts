@@ -11,7 +11,7 @@ const takeRule: TakeRule = {
 };
 
 const whenRule: WhenRule = {
-  when: { field: '', equals: ''},
+  when: { field: '', equals: '' },
   mergeInto: { path: '', operation: 'push', output: '' },
 };
 
@@ -21,7 +21,7 @@ describe('take applicator', () => {
     { out: 'middle' },
     { out: 'last' },
   ];
-  
+
   it('isTakeRule', () => {
     assert(isTakeRule(takeRule) === true);
     assert(isTakeRule(whenRule) === false);
@@ -34,7 +34,7 @@ describe('take applicator', () => {
     }
 
     const applicator = take(rule);
-    
+
     const got = applicator(records);
     const want = 'first';
     assert.deepEqual(got, want);
@@ -47,7 +47,7 @@ describe('take applicator', () => {
     };
 
     const applicator = take(rule);
-    
+
     const got = applicator(records);
     const want = 'last';
     assert.deepEqual(got, want);
@@ -67,12 +67,12 @@ describe('take applicator', () => {
     ];
 
     const applicator = take(rule);
-    
+
     const got = applicator(records);
     const want = 'last';
     assert.deepEqual(got, want);
   });
-  
+
   it('take::returns null when the rule does not apply', () => {
     const rule: TakeRule = {
       take: { sequence: 'last' },
@@ -83,7 +83,7 @@ describe('take applicator', () => {
     ];
 
     const applicator = take(rule);
-    
+
     const got = applicator(records);
     const want = null;
     assert.deepEqual(got, want);
@@ -103,7 +103,7 @@ describe('when applicator', () => {
     assert(isWhenRule(takeRule) === false);
   });
 
-  it ('when::string output', () => {
+  it('when::string output', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '3' },
       mergeInto: { path: '', operation: 'set', output: 'out' },
@@ -116,7 +116,7 @@ describe('when applicator', () => {
     assert.deepEqual(got, want);
   });
 
-  it ('when::string output takes the last', () => {
+  it('when::string output takes the last', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '2' },
       mergeInto: { path: '', operation: 'set', output: 'out' },

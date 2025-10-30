@@ -8,16 +8,16 @@ export function take(rule: TakeRule): Applicator {
   return (records: ParsedRecord[]): ApplicatorResult => {
     switch (rule.take.sequence) {
       case 'first':
-	break;
+        break;
       case 'last':
-	records = records.reverse();
-	break;
+        records = records.reverse();
+        break;
     }
 
     for (const record of records) {
       const value = record[rule.mergeInto.output];
       if (value !== undefined) {
-	return value;
+        return value;
       }
     }
 

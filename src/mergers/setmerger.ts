@@ -7,14 +7,20 @@ export function isSetMerge(mergeInto: Rule['mergeInto']): mergeInto is SetMerge 
 export function set(mergeInto: SetMerge): Merger {
   return (member: Member, result: ApplicatorResult): Member => {
     let current: any = member;
-    for (const path of mergeInto.path.split('.')) {
-      if (current === undefined) {
+    const pathParts = mergeInto.path.split('.');
+
+    for (let i = 0; i < pathParts.length - 1; ++i) {
+      if (typeof current !== 'object') {
         throw new Error(`could not find path in member '${mergeInto.path}'`);
       }
-      current = current[path];
+      current = current[pathParts[i]];
     }
 
-    current = result;
+    if (typeof current !== 'object') {
+      throw new Error(`could not find path in member '${mergeInto.path}'`);
+    }
+    current[pathParts[pathParts.length - 1]] = result;
+
     return member;
   }
 }
