@@ -5,7 +5,6 @@ import type { AssemblerConfig, Member, ParsedRecord, Rule } from './types';
 export function assemble(config: AssemblerConfig, records: ParsedRecord[]): Member[] {
   const assembled: Member[] = [];
   const grouped = groupBy(config.groupBy, records);
-  console.log(grouped);
 
   for (const [_, groupedRecords] of Object.entries(grouped)) {
     const member = merge(config.rules, groupedRecords);

@@ -6,7 +6,6 @@ export function csvParser(config: CSVParserConfig): Parser {
     const results = Papa.parse<string[]>(input, { delimiter: config.delimiter, skipFirstNLines: config.skipLines, header: false, skipEmptyLines: true, });
 
     if (results.errors.length !== 0) {
-      console.error(results.errors);
       throw new Error('Failed to parse csv file.');
     }
 

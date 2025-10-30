@@ -10,24 +10,25 @@ export function push(mergeInto: PushMerge): Merger {
     const pathParts = mergeInto.path.split('.');
 
     for (let i = 0; i < pathParts.length - 1; ++i) {
-      if (current === undefined) {
+      if (typeof current !== 'object') {
         throw new Error(`could not find path in member '${mergeInto.path}'`);
       }
       current = current[pathParts[i]];
     }
 
-    if (current === undefined) {
+    if (typeof current !== 'object') {
       throw new Error(`could not find path in member '${mergeInto.path}'`);
     }
 
-    if (!Array.isArray(current[pathParts[pathParts.length - 1]])) {
+    const finalPath = pathParts[pathParts.length - 1];
+    if (!Array.isArray(current[finalPath])) {
       throw new Error(`can not push to non array member property '${mergeInto.path}'`);
     }
 
     if (Array.isArray(result)) {
-      current[pathParts[pathParts.length - 1]].push(...result);
+      current[finalPath].push(...result);
     } else {
-      current[pathParts[pathParts.length - 1]].push(result);
+      current[finalPath].push(result);
     }
     return member;
   }
