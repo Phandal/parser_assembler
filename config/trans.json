@@ -1,16 +1,24 @@
 {
   "parser": {
-    "type": "csv",
-    "delimiter": ",",
+    "kind": "csv",
     "skipLines": 1,
+    "delimiter": ",",
     "trim": true,
     "fields": [
       {
-        "name": "recordtype",
+        "name": "recordType",
         "index": 0
       },
       {
-        "name": "ssn",
+        "name": "planid",
+        "index": 1
+      },
+      {
+        "name": "employeeName",
+        "index": 2
+      },
+      {
+        "name": "employeeSSN",
         "index": 3
       },
       {
@@ -18,40 +26,112 @@
         "index": 4
       },
       {
-        "name": "code",
+        "name": "endAllDeferrals",
+        "index": 5
+      },
+      {
+        "name": "contributionCode",
         "index": 6
       },
       {
-        "name": "amount",
+        "name": "deferralPercent",
+        "index": 7
+      },
+      {
+        "name": "deferralAmt",
         "index": 8
       },
       {
-        "name": "loanpayment",
+        "name": "planEntryDate",
+        "index": 9
+      },
+      {
+        "name": "loanNumber",
         "index": 10
+      },
+      {
+        "name": "loanPaymentAmount",
+        "index": 11
+      },
+      {
+        "name": "loanGoal",
+        "index": 12
       }
     ]
   },
   "assembler": {
-    "groupBy": "ssn",
-    "mergeStrategy": {
-      "ssn": "first",
-      "effectivedate": "last",
-      "changes": {
-        "kind": "object-list",
-        "valueMap": {},
-        "output": {
-          "key": "code",
-          "keyName": "type",
-          "value": "amount",
-          "valueName": "value"
+    "groupBy": "employeeSSN",
+    "rules": [
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "ssn",
+          "output": "employeeSSN",
+          "operation": "set"
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "effectiveDate",
+          "output": "effectiveDate",
+          "operation": "set"
+        }
+      },
+      {
+        "when": {
+          "field": "contributionCode",
+          "equals": "401K"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "401K"
+            },
+            "amount": "deferralAmt",
+            "percent": "deferralPercent"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "contributionCode",
+          "equals": "4ROTH"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "ROTH"
+            },
+            "amount": "deferralAmt",
+            "percent": "deferralPercent"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "contributionCode",
+          "equals": "401L"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "LOAN"
+            },
+            "amount": "loanPaymentAmount"
+          }
         }
       }
-    },
-    "transforms": {},
-    "outputMapping": {
-      "ssn": "ssn",
-      "effectivedate": "effectivedate",
-      "changes": "changes"
-    }
+    ]
   }
 }

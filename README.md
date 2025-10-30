@@ -31,6 +31,10 @@ This rule allows you to `push` or `set` values in the member record output via t
 of the rule. If the `mergeInto.operation` is set, then the last value from the grouped
 records is set.
 
+## TODO
+1. Add tests for `HardCoded`
+2. Finish example configs
+
 ## Standard Format
 ```json
 {
