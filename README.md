@@ -32,7 +32,6 @@ of the rule. If the `mergeInto.operation` is set, then the last value from the g
 records is set.
 
 ## TODO
-1. Add tests for `HardCoded`
 2. Add `and` in when expression
 2. Finish example configs
 

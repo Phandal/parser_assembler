@@ -147,12 +147,25 @@ describe('when applicator', () => {
     const rule: WhenRule = {
       when: { field: 'code', equals: '2' },
       mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
-    }
+    };
 
     const applicator = when(rule);
 
     const got = applicator(records);
     const want = [{ code: 'two' }, { code: 'twotwo' }];
+    assert.deepEqual(got, want);
+  });
+
+  it('when::object output with HardCoded value', () => {
+    const rule: WhenRule = {
+      when: { field: 'code', equals: '3' },
+      mergeInto: { path: '', operation: 'push', output: { hardcoded: { _value: 'test' }, code: 'out' } },
+    };
+
+    const applicator = when(rule);
+
+    const got = applicator(records);
+    const want = [{ hardcoded: 'test', code: 'three' }];
     assert.deepEqual(got, want);
   });
 
