@@ -22,9 +22,12 @@ async function run() {
 
   const parser = createParser(config.parser);
   const parsedRecords = await parser(input);
+  console.log('Parsed Records:');
+  console.log(JSON.stringify(parsedRecords, null, 2));
 
   const records = assemble(config.assembler, parsedRecords);
 
+  console.log('Assembled Records:');
   console.log(JSON.stringify(records, null, 2));
 }
 

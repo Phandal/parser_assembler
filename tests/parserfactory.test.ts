@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { createParser } from '../src/parsers/parserfactory.ts';
-import { CSVParserConfig } from '../src/types.ts';
+import type { CSVParserConfig } from '../src/types.ts';
 
 describe('parserFactory', () => {
   it('createParser::fail', () => {

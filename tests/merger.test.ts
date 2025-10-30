@@ -3,8 +3,8 @@ import assert from 'node:assert';
 
 import { isSetMerge, set } from '../src/mergers/setmerger';
 import { isPushMerge, push } from '../src/mergers/pushmerger';
-import { Deferral, Member, PushMerge, SetMerge } from '../src/types';
 import { createMember } from '../src/assembler';
+import type { Deferral, Member, PushMerge, SetMerge } from '../src/types';
 
 const setMerge: SetMerge = { path: '', operation: 'set', output: '' };
 const pushMerge: PushMerge = { path: '', operation: 'push', output: { key: 'value' } };

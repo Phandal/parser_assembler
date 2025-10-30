@@ -16,7 +16,7 @@ export function take(rule: TakeRule): Applicator {
 
     for (const record of records) {
       const value = record[rule.mergeInto.output];
-      if (value !== undefined) {
+      if (value !== undefined && value !== '') {
         return value;
       }
     }

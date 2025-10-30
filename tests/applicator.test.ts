@@ -2,8 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { isTakeRule, take } from '../src/applicators/takeapplicator';
-import { isWhenRule, when } from '../src/applicators/whenapplicator';
-import { ParsedRecord, TakeRule, WhenRule } from '../src/types';
+import { isWhenRule, objectMapper, stringMapper, when } from '../src/applicators/whenapplicator';
+import type { ParsedRecord, TakeRule, WhenRule } from '../src/types';
 
 const takeRule: TakeRule = {
   take: { sequence: 'last' },
@@ -53,7 +53,7 @@ describe('take applicator', () => {
     assert.deepEqual(got, want);
   });
 
-  it('take::ignores properties that are undefined', () => {
+  it('take::ignores properties that are undefined or empty string', () => {
     const rule: TakeRule = {
       take: { sequence: 'last' },
       mergeInto: { path: '', operation: 'set', output: 'out' },
@@ -63,6 +63,7 @@ describe('take applicator', () => {
       { out: 'first' },
       { out: 'middle' },
       { out: 'last' },
+      { out: '' },
       { test: 'here' },
     ];
 
@@ -92,7 +93,7 @@ describe('take applicator', () => {
 
 describe('when applicator', () => {
   const records: ParsedRecord[] = [
-    { code: '1', out: 'one' },
+    { code: '1', out: '' },
     { code: '2', out: 'two' },
     { code: '3', out: 'three' },
     { code: '2', out: 'twotwo' },
@@ -177,6 +178,32 @@ describe('when applicator', () => {
     const applicator = when(rule);
 
     const got = applicator(records);
+    const want = null
+    assert.deepEqual(got, want);
+  });
+
+  it('stringMapper ignores undefined and empty string', () => {
+    const rule: WhenRule = {
+      when: { field: 'code', equals: '1' },
+      mergeInto: { path: '', operation: 'push', output: 'out' },
+    }
+
+    const mapper = stringMapper(rule.when, rule.mergeInto.output as string);
+
+    const got = mapper(records);
+    const want = null
+    assert.deepEqual(got, want);
+  });
+
+  it('objectMapper ignores undefined and empty string', () => {
+    const rule: WhenRule = {
+      when: { field: 'code', equals: '1' },
+      mergeInto: { path: '', operation: 'push', output: { code: 'out' } },
+    }
+
+    const mapper = objectMapper(rule.when, rule.mergeInto.output as Record<string, string>);
+
+    const got = mapper(records);
     const want = null
     assert.deepEqual(got, want);
   });

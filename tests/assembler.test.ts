@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { groupBy, merge, createMember } from '../src/assembler';
-import { ParsedRecord, Rule } from '../src/types';
+import type { ParsedRecord, Rule } from '../src/types';
 
 describe('groupBy', () => {
   it('groups records by a key', () => {

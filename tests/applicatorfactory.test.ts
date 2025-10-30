@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { createApplicator } from '../src/applicators/applicatorfactory';
-import { Rule } from '../src/types';
+import type { Rule } from '../src/types';
 
 describe('applicatorFactory', () => {
   it('createApplicator::fail', () => {

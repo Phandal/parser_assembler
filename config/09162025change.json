@@ -1,12 +1,12 @@
 {
   "parser": {
-    "type": "csv",
+    "kind": "csv",
+    "skipRows": 0,
     "delimiter": ",",
-    "skipLines": 0,
     "trim": true,
     "fields": [
       {
-        "name": "plan",
+        "name": "planid",
         "index": 0
       },
       {
@@ -14,19 +14,19 @@
         "index": 1
       },
       {
-        "name": "401k",
+        "name": "401kAmount",
         "index": 4
       },
       {
-        "name": "roth",
+        "name": "rothAmount",
         "index": 5
       },
       {
-        "name": "address1",
+        "name": "addr1",
         "index": 20
       },
       {
-        "name": "address2",
+        "name": "addr2",
         "index": 21
       },
       {
@@ -49,34 +49,109 @@
   },
   "assembler": {
     "groupBy": "ssn",
-    "mergeStrategy": {
-      "plan": "first",
-      "ssn": "first",
-      "changes": {
-        "kind": "column-pivot",
-        "fields": [
-          "401k",
-          "roth",
-          "address1",
-          "address2",
-          "city",
-          "state",
-          "zip"
-        ],
-        "output": {
-          "keyName": "type",
-          "valueName": "value"
+    "rules": [
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "ssn",
+          "operation": "set",
+          "output": "ssn"
         }
       },
-      "effectiveDate": "first"
-    },
-    "transforms": {
-      "state": "downcase",
-      "city": "upcase"
-    },
-    "outputMapping": {
-      "ssn": "ssn",
-      "changes": "changes"
-    }
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "effectiveDate",
+          "operation": "set",
+          "output": "effectiveDate"
+        }
+      },
+      {
+        "when": {
+          "field": "401kAmount",
+          "notequals": ""
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "401K"
+            },
+            "amount": "401kAmount"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "rothAmount",
+          "notequals": ""
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "ROTH"
+            },
+            "amount": "rothAmount"
+          }
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "demographic.addr1",
+          "operation": "set",
+          "output": "addr1"
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "demographic.addr2",
+          "operation": "set",
+          "output": "addr2"
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "demographic.city",
+          "operation": "set",
+          "output": "city"
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "demographic.state",
+          "operation": "set",
+          "output": "state"
+        }
+      },
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "demographic.zip",
+          "operation": "set",
+          "output": "zip"
+        }
+      }
+    ]
   }
 }

@@ -1,4 +1,4 @@
-import type { HardCoded, Rule, WhenRule, Applicator, ApplicatorResult, ParsedRecord } from '../types';
+import type { HardCoded, Rule, WhenRule, Applicator, ApplicatorResult, ParsedRecord, WhenRuleEqualOptions, WhenRuleNotEqualOptions } from '../types';
 
 export function isWhenRule(rule: Rule): rule is WhenRule {
   return 'when' in rule;
@@ -31,7 +31,22 @@ export function isObjectMapper(output: Rule['mergeInto']['output']): output is R
 
 export function evaluateWhen(when: WhenRule['when'], record: ParsedRecord): boolean {
   const value = record[when.field];
-  return (value === when.equals);
+
+  if (isWhenEqual(when)) {
+    return value === when.equals;
+  } else if (isWhenNotEqual(when)) {
+    return value !== when.notequals;
+  }
+
+  throw new Error(`Unknown when comparison: ${JSON.stringify(when)}`);
+}
+
+export function isWhenEqual(when: WhenRule['when']): when is WhenRuleEqualOptions {
+  return 'equals' in when;
+}
+
+export function isWhenNotEqual(when: WhenRule['when']): when is WhenRuleNotEqualOptions {
+  return 'notequals' in when;
 }
 
 export function stringMapper(when: WhenRule['when'], output: string): Applicator {
@@ -39,7 +54,11 @@ export function stringMapper(when: WhenRule['when'], output: string): Applicator
     let result = null;
     for (const record of records) {
       if (evaluateWhen(when, record)) {
-        result = record[output];
+        const value = record[output];
+
+        if (value !== undefined && value !== '') {
+          result = record[output];
+        }
       }
     }
     return result;
@@ -51,14 +70,22 @@ export function objectMapper(when: WhenRule['when'], output: Record<string, stri
     const results: Record<string, string>[] = [];
     for (const record of records) {
       if (evaluateWhen(when, record)) {
+        let shouldPush = true;
         const result: Record<string, string> = {};
         for (const [key, value] of Object.entries(output)) {
           if (typeof value === 'object') {
             result[key] = value._value;
           } else {
+            const recordValue = record[value];
+            if (recordValue === undefined || recordValue === '') {
+              shouldPush = false;
+              break;
+            }
             result[key] = record[value]
           }
-          results.push(result);
+
+
+          if (shouldPush) { results.push(result) };
         }
       }
     }

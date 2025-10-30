@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { CSVParserConfig } from '../src/types';
 import { csvParser } from '../src/parsers/csvparser';
+import type { CSVParserConfig } from '../src/types';
 
 const input = `Name,Age\nJack  ,14  \nMark ,15 \nSusan,56\n`;
 

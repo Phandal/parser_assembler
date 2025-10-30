@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { createMerger } from '../src/mergers/mergerfactory';
-import { Rule } from '../src/types';
+import type { Rule } from '../src/types';
 
 describe('mergerFactory', () => {
   it('createMerger::fail', () => {
