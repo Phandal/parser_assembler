@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import type { Rule, TakeRule, Applicator, ApplicatorResult, ParsedRecord } from '../types';
 
 export function isTakeRule(rule: Rule): rule is TakeRule {
@@ -7,14 +6,22 @@ export function isTakeRule(rule: Rule): rule is TakeRule {
 
 export function take(rule: TakeRule): Applicator {
   return (records: ParsedRecord[]): ApplicatorResult => {
-    assert(records.length !== 0);
-
     switch (rule.take.sequence) {
       case 'first':
-        return records[0][rule.mergeInto.output];
+	break;
       case 'last':
-        return records[records.length - 1][rule.mergeInto.output];
+	records = records.reverse();
+	break;
     }
+
+    for (const record of records) {
+      const value = record[rule.mergeInto.output];
+      if (value !== undefined) {
+	return value;
+      }
+    }
+
+    return null;
   }
 }
 
