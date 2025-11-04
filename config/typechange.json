@@ -1,8 +1,8 @@
 {
   "parser": {
-    "type": "csv",
-    "delimiter": ",",
+    "kind": "csv",
     "skipLines": 1,
+    "delimiter": ",",
     "trim": true,
     "fields": [
       {
@@ -10,34 +10,87 @@
         "index": 0
       },
       {
-        "name": "kind",
+        "name": "type",
         "index": 1
       },
       {
-        "name": "value",
+        "name": "change",
         "index": 2
       }
     ]
   },
   "assembler": {
     "groupBy": "ssn",
-    "mergeStrategy": {
-      "ssn": "first",
-      "changes": {
-        "kind": "object-list",
-        "valueMap": {},
-        "output": {
-          "key": "kind",
-          "keyName": "type",
-          "value": "value",
-          "valueName": "value"
+    "rules": [
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "ssn",
+          "operation": "set",
+          "output": "ssn"
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "401k"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "401K"
+            },
+            "amount": "change"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "roth"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "ROTH"
+            },
+            "amount": "change"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "401k loan"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "LOAN"
+            },
+            "amount": "change"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "city"
+        },
+        "mergeInto": {
+          "path": "demographic.city",
+          "operation": "set",
+          "output": "change"
         }
       }
-    },
-    "transforms": {},
-    "outputMapping": {
-      "ssn": "ssn",
-      "changes": "changes"
-    }
+    ]
   }
 }

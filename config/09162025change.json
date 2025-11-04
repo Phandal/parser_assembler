@@ -1,7 +1,7 @@
 {
   "parser": {
     "kind": "csv",
-    "skipRows": 0,
+    "skipLines": 0,
     "delimiter": ",",
     "trim": true,
     "fields": [

@@ -1,8 +1,8 @@
 {
   "parser": {
-    "type": "csv",
-    "delimiter": ",",
+    "kind": "csv",
     "skipLines": 1,
+    "delimiter": ",",
     "trim": true,
     "fields": [
       {
@@ -21,29 +21,60 @@
   },
   "assembler": {
     "groupBy": "ssn",
-    "mergeStrategy": {
-      "ssn": "first",
-      "changes": {
-        "kind": "object-list",
-        "valueMap": {
-          "type": {
-            "1": "401k",
-            "2": "roth",
-            "3": "city"
-          }
+    "rules": [
+      {
+        "take": {
+          "sequence": "last"
         },
-        "output": {
-          "key": "type",
-          "keyName": "type",
-          "value": "change",
-          "valueName": "value"
+        "mergeInto": {
+          "path": "ssn",
+          "operation": "set",
+          "output": "ssn"
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "1"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "401K"
+            },
+            "amount": "change"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "2"
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "ROTH"
+            },
+            "amount": "change"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "type",
+          "equals": "3"
+        },
+        "mergeInto": {
+          "path": "demographic.city",
+          "operation": "set",
+          "output": "change"
         }
       }
-    },
-    "transforms": {},
-    "outputMapping": {
-      "ssn": "ssn",
-      "changes": "changes"
-    }
+    ]
   }
 }

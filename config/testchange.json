@@ -1,6 +1,6 @@
 {
   "parser": {
-    "type": "csv",
+    "kind": "csv",
     "delimiter": "|",
     "skipLines": 1,
     "trim": true,
@@ -29,26 +29,65 @@
   },
   "assembler": {
     "groupBy": "ssn",
-    "transforms": {},
-    "mergeStrategy": {
-      "groupid": "first",
-      "ssn": "first",
-      "changes": {
-        "kind": "column-pivot",
-        "fields": [
-          "401k",
-          "roth",
-          "loan"
-        ],
-        "output": {
-          "keyName": "type",
-          "valueName": "value"
+    "rules": [
+      {
+        "take": {
+          "sequence": "last"
+        },
+        "mergeInto": {
+          "path": "ssn",
+          "operation": "set",
+          "output": "ssn"
+        }
+      },
+      {
+        "when": {
+          "field": "401k",
+          "notequals": ""
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "401K"
+            },
+            "amount": "401k"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "loan",
+          "notequals": ""
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "LOAN"
+            },
+            "amount": "loan"
+          }
+        }
+      },
+      {
+        "when": {
+          "field": "roth",
+          "notequals": ""
+        },
+        "mergeInto": {
+          "path": "deferrals",
+          "operation": "push",
+          "output": {
+            "type": {
+              "_value": "ROTH"
+            },
+            "amount": "roth"
+          }
         }
       }
-    },
-    "outputMapping": {
-      "ssn": "ssn",
-      "changes": "changes"
-    }
+    ]
   }
 }
